@@ -12,7 +12,7 @@ public class Main {
         String input = "2023-03-01T13:00:00Z";
         //oggetto OffsetDateTime
         OffsetDateTime dataOffset = OffsetDateTime.parse(input);
-        //formato richiesto
+        //formato richiesto 01 marzo 2023
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy",Locale.ITALIAN);
         //Stampa
         System.out.println(formatter.format(dataOffset));
@@ -20,8 +20,3 @@ public class Main {
 
 }
 
-/*
-Crea un oggetto OffsetDateTime da questa stringa 2023-03-01T13:00:00Z
-Formatta la data ottenendo 01 marzo 2023
-Stampa sulla console
- */
