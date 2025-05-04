@@ -4,24 +4,19 @@ import java.util.ArrayList;
 public class Main {
 
         public static void main(String[] args) {
+            Person p1 = new PersonBuilder("Luca","Rossi").build();
 
-//            ArrayList<Shape> listaForme = new ArrayList<>();
-            for(Forma f : Forma.values()){
-                ShapeFactory.creaForma(f).draw();
-//                listaForme.add(ShapeFactory.creaForma(f));
-            }
-        }
+            Person p2 = new PersonBuilder("Mario","Belloni")
+                    .setAddress("Via Napoli 11")
+                    .setAge(32).build();
 
-
-       enum Forma{
-            Rettangolo,
-            Cerchio
+            System.out.println(p1+"\n"+p2);
         }
 
 }
 /*
-Crea un'interfaccia Shape e un metodo draw, crea 2 o più classi che implementino Shape.
-Cre una enum che abbia tutti i tipi di shape che hai creato ( cerchio, rettangolo etc etc)
-Crea una factory class che abbia un metodo che ritorni la forma corretta (shape) in base all'enum in input.
-Stampa a video il risultato della funzione draw di ogni shape creata
+Crea una classe Person con i campi firstName, lastName, age e address, i getter and i setter
+Il costruttore accetterà un Builder in input
+Creare una classe Builder che attraverso il costruttore e dei metodi specifici (tranne nome e cognome, gli altri campi sono opzionali) per costruire l'oggetto Person.
+Creare due oggetti Person e stamparli a video
  */
