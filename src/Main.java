@@ -4,19 +4,20 @@ import java.util.ArrayList;
 public class Main {
 
         public static void main(String[] args) {
-            Person p1 = new PersonBuilder("Luca","Rossi").build();
+            User u1 = new User();
+            u1.stampaDettagli();
 
-            Person p2 = new PersonBuilder("Mario","Belloni")
-                    .setAddress("Via Napoli 11")
-                    .setAge(32).build();
-
-            System.out.println(p1+"\n"+p2);
+            User u2 = new User();
+            u2.setEtà(22);
+            u2.setNome("Marco");
+            u2.stampaDettagli();
         }
 
 }
 /*
-Crea una classe Person con i campi firstName, lastName, age e address, i getter and i setter
-Il costruttore accetterà un Builder in input
-Creare una classe Builder che attraverso il costruttore e dei metodi specifici (tranne nome e cognome, gli altri campi sono opzionali) per costruire l'oggetto Person.
-Creare due oggetti Person e stamparli a video
+Crea una classe User che abbia i parametri privati nome ed età e i getter e setter
+All'interno di User ci sarà anche una funzione che stampi a video le informazioni di età e il nome.
+Creare 2 oggetti User di cui creerà un'istanza.
+Del primo si stamperanno le informazioni di default,
+ del secondo si cambieranno le informazioni e poi si stamperanno a video
  */
