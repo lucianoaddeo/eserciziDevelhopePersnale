@@ -1,48 +1,28 @@
 import org.junit.jupiter.api.Test;
 
-import java.time.DayOfWeek;
-import java.time.Month;
-import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 class MainTest {
 
     @Test
     void creaData() {
         String dataStringa = "2023-03-01T13:00:00Z";
-        OffsetDateTime data = OffsetDateTime.parse(dataStringa);
+        ZonedDateTime data = ZonedDateTime.parse(dataStringa);
         assertEquals(data,Main.creaData());
     }
 
     @Test
-    void anno() {
+    void dataModificata() {
         String dataStringa = "2023-03-01T13:00:00Z";
-        OffsetDateTime data = OffsetDateTime.parse(dataStringa);
-        int anno = data.getYear();
-        assertEquals(anno,Main.anno(data));
-    }
-
-    @Test
-    void mese() {
-        String dataStringa = "2023-03-01T13:00:00Z";
-        OffsetDateTime data = OffsetDateTime.parse(dataStringa);
-        Month mese = data.getMonth();
-        assertEquals(mese,Main.mese(data));
-    }
-
-    @Test
-    void giorno() {
-        String dataStringa = "2023-03-01T13:00:00Z";
-        OffsetDateTime data = OffsetDateTime.parse(dataStringa);
-        int giorno = data.getDayOfMonth();
-        assertEquals(giorno,Main.giorno(data));
-    }
-
-    @Test
-    void giornoSettimana() {
-        String dataStringa = "2023-03-01T13:00:00Z";
-        OffsetDateTime data = OffsetDateTime.parse(dataStringa);
-        DayOfWeek giorno = data.getDayOfWeek();
-        assertEquals(giorno,Main.giornoSettimana(data));
+        ZonedDateTime data = ZonedDateTime.parse(dataStringa);
+        ZonedDateTime risultato = data.plusYears(1).minusMonths(1).plusDays(7);
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL)
+                .withLocale(Locale.ITALY);
+        assertEquals(formatter.format(risultato),Main.dataModificata(data));
     }
 }

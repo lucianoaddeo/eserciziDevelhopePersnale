@@ -1,51 +1,46 @@
 import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
         //creazione data
-        OffsetDateTime data = creaData();
-        int anno = anno(data);
-        Month mese = mese(data);
-        int giorno = giorno(data);
-        DayOfWeek giornoSettimana = giornoSettimana(data);
+        ZonedDateTime data = creaData();
+        String dataModificata = dataModificata(data);
 
         //stampe
         System.out.println(data);
-        System.out.println(anno);
-        System.out.println(mese);
-        System.out.println(giorno);
-        System.out.println(giornoSettimana);
+        System.out.println(dataModificata);
+
     }
 
-    public static OffsetDateTime creaData(){
+    public static ZonedDateTime creaData(){
         String dataStringa = "2023-03-01T13:00:00Z";
-        return OffsetDateTime.parse(dataStringa);
+        return ZonedDateTime.parse(dataStringa);
     }
 
-    public static int anno(OffsetDateTime dataOffset){
-        return dataOffset.getYear();
+    public static String dataModificata(ZonedDateTime dataOffset){
+        ZonedDateTime risultato = dataOffset.plusYears(1).minusMonths(1).plusDays(7);
+        // Formatter localizzato per l’Italia
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL)
+                .withLocale(Locale.ITALY);
+        return formatter.format(risultato);
     }
 
-    public static Month mese(OffsetDateTime dataOffset){
-        return dataOffset.getMonth();
-    }
-    public static int giorno(OffsetDateTime dataOffset){
-        return dataOffset.getDayOfMonth();
-    }
-    public static DayOfWeek giornoSettimana(OffsetDateTime dataOffset){
-        return dataOffset.getDayOfWeek();
-    }
+
 }
 
 /*
 Crea un oggetto data da questa stringa 2023-03-01T13:00:00Z
-Ottieni l'anno
-Ottieni il mese
-Ottieni il giorno
-Ottieni il giorno della settimana
-Stampa i risultati sulla console -Crea dei test per questo esercizio
+aggiungi un anno
+sottrai un mese
+aggiungi 7 giorni
+Stampa il risultato localizzata per l'Italia
+Crea dei test per questo esercizio
 
 
  */
