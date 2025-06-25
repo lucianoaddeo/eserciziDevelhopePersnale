@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -50,6 +51,26 @@ public class CarController {
         return ResponseEntity.ok(ar);
     }
 
+    @GetMapping("/get/model")
+    public ResponseEntity<ApiResponse> getByModel(
+            @RequestParam(required = false, name = "pn") Integer pageNum,
+            @RequestParam(required = false, name = "ps") Integer pageSize,
+            @RequestParam(name = "mn") String modelName){
+
+
+        int pn = (pageNum == null || pageNum < 0) ? 0 : pageNum;
+        int ps = (pageSize == null || pageSize < 0) ? 10 : pageSize;
+        //paginazione
+        Pageable pageable = PageRequest.of(pn,ps,
+                Sort.by(new Sort.Order(Sort.Direction.DESC, "modelName"),
+                        new Sort.Order(Sort.Direction.ASC, "id")));
+
+        Page<Car> page = cr.findByModelName(modelName,pageable);
+
+        ApiResponse ar = new ApiResponse(page);
+        return ResponseEntity.ok(ar);
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse> save(@Valid @RequestBody Car car,
                                             BindingResult bindingResult){
@@ -58,10 +79,14 @@ public class CarController {
             return ResponseEntity.badRequest().body(ar);
         }
 
-        Car saved = cr.save(car);
-        ApiResponse ar = new ApiResponse(saved);
-        return ResponseEntity.ok(ar);
-        
+        if(car.getId()==null){
+            Car saved = cr.save(car);
+            ApiResponse ar = new ApiResponse(saved);
+            return ResponseEntity.ok(ar);
+        }
+
+        ApiResponse ar = new ApiResponse("Error creating car, do not specify id");
+        return ResponseEntity.badRequest().body(ar);
     }
 
     //aggiorna il cartype per id
