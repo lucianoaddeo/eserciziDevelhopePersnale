@@ -1,9 +1,10 @@
 package com.example.macchina.controller;
 
 import com.example.macchina.dto.ApiResponse;
-import com.example.macchina.dto.CarTypeDto;
+import com.example.macchina.dto.PaginationDTO;
 import com.example.macchina.model.Car;
 import com.example.macchina.repository.CarRepository;
+import com.example.macchina.utils.PaginationUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,25 +27,21 @@ public class CarController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<ApiResponse> getById(@PathVariable Integer id){
+
         Optional<Car> car = cr.findById(id);
         if(car.isPresent()){
             ApiResponse ap = new ApiResponse(car);
             return ResponseEntity.ok(ap);
-
         }
         ApiResponse ap = new ApiResponse("Car with id = "+id+" not found ");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ap);
     }
 
     @GetMapping("/get/all")
-    public ResponseEntity<ApiResponse> getAll(
-            @RequestParam(required = false, name = "pn") Integer pageNum,
-            @RequestParam(required = false, name = "ps") Integer pageSize){
-        //controllo sui parametri?
-        int pn = (pageNum == null || pageNum < 0) ? 0 : pageNum;
-        int ps = (pageSize == null || pageSize < 0) ? 10 : pageSize;
-        //paginazione
-        Pageable pageable = PageRequest.of(pn,ps);
+    public ResponseEntity<ApiResponse> getAll(PaginationDTO paginationDTO){
+
+        //paginazione, i parametri sono specificati in paginationDTO
+        Pageable pageable =   PaginationUtil.create(paginationDTO);
         Page<Car> page = cr.findAll(pageable);
 
         ApiResponse ar = new ApiResponse(page);
@@ -53,22 +50,19 @@ public class CarController {
 
     @GetMapping("/get/model")
     public ResponseEntity<ApiResponse> getByModel(
-            @RequestParam(required = false, name = "pn") Integer pageNum,
-            @RequestParam(required = false, name = "ps") Integer pageSize,
+            PaginationDTO paginationDTO,
             @RequestParam(name = "mn") String modelName){
 
+        if(modelName!=null){
+            //paginazione
+            Pageable pageable = PaginationUtil.create(paginationDTO);
+            Page<Car> page = cr.findByModelNameStartingWith(modelName,pageable);
+            ApiResponse ar = new ApiResponse(page);
+            return ResponseEntity.ok(ar);
+        }
+        return ResponseEntity.badRequest().body(
+                new ApiResponse("Model name needs to be specified "));
 
-        int pn = (pageNum == null || pageNum < 0) ? 0 : pageNum;
-        int ps = (pageSize == null || pageSize < 0) ? 10 : pageSize;
-        //paginazione
-        Pageable pageable = PageRequest.of(pn,ps,
-                Sort.by(new Sort.Order(Sort.Direction.DESC, "modelName"),
-                        new Sort.Order(Sort.Direction.ASC, "id")));
-
-        Page<Car> page = cr.findByModelName(modelName,pageable);
-
-        ApiResponse ar = new ApiResponse(page);
-        return ResponseEntity.ok(ar);
     }
 
     @PostMapping
@@ -79,7 +73,7 @@ public class CarController {
             return ResponseEntity.badRequest().body(ar);
         }
 
-        if(car.getId()==null){
+        if(car.getId()==null){//quando salvo la car non voglio che la richiesta mi invii l'id, perché è un campo auto incrementale e perché non voglio che questo metodo permetta un update
             Car saved = cr.save(car);
             ApiResponse ar = new ApiResponse(saved);
             return ResponseEntity.ok(ar);
@@ -92,7 +86,8 @@ public class CarController {
     //aggiorna il cartype per id
     @PostMapping("/type/{id}")
     public ResponseEntity<ApiResponse> update(@PathVariable Integer id,
-                                              @Valid @RequestBody CarTypeDto carTypeDto, BindingResult bindingResult){
+                                              @Valid @RequestBody Car carRB,
+                                              BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             ApiResponse ar = new ApiResponse(bindingResult.getAllErrors());
@@ -105,8 +100,11 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ar);
         }
 
-        Car carDb = optionalCar.get();
-        carDb.setType(carTypeDto.getType());
+        Car carDb = optionalCar.get();//car presa dal db
+        carDb.setType(
+                carRB.getType()//se il requestBody è una car, come json devo passare un oggetto Car che rispetti i vincoli dei campi notNull,
+                              // se il requestBody è CarTypeDto, come json mando un oggetto che ha solo il campo type
+        );
         Car saved = cr.save(carDb);
         ApiResponse ar = new ApiResponse(saved);
         return ResponseEntity.ok(ar);
@@ -132,5 +130,21 @@ public class CarController {
         ApiResponse ar = new ApiResponse("Deleted all cars", true);
 
         return ResponseEntity.ok().body(ar);
+    }
+
+    @GetMapping("/get/")
+    public ResponseEntity<ApiResponse> getByColor(@RequestParam String color,
+                                                  PaginationDTO paginationDTO) {
+
+        Pageable pageable = PaginationUtil.create(paginationDTO);
+        Page<Car> carPage = cr.findByColorContainsNative("%" + color +"%", pageable);
+
+        ApiResponse ap = new ApiResponse(carPage);
+        return ResponseEntity.ok(ap);
+    }
+
+    @GetMapping("/testPage")
+    public ResponseEntity<ApiResponse> test(PaginationDTO paginationDTO){
+        return ResponseEntity.ok(new ApiResponse(paginationDTO));
     }
 }

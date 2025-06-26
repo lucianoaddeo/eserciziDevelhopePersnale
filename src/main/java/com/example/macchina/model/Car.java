@@ -1,6 +1,7 @@
 package com.example.macchina.model;
 
 import com.example.macchina.enums.CarColor;
+import com.example.macchina.enums.CarNation;
 import com.example.macchina.enums.CarType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,10 @@ public class Car {
     private CarColor color;
     @Lob
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)//caso particolare, nel data.sql non ho specificato il campo nation
+    private CarNation nation;
 
     //constructors
 
@@ -84,5 +89,13 @@ public class Car {
 
     public void setType(@NotNull CarType type) {
         this.type = type;
+    }
+
+    public CarNation getNation() {
+        return nation;
+    }
+
+    public void setNation(CarNation nation) {
+        this.nation = nation;
     }
 }

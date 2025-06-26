@@ -4,7 +4,7 @@ import com.example.macchina.enums.CarType;
 import jakarta.validation.constraints.NotNull;
 
 
-public class CarTypeDto {
+public class CarTypeDTO {
     @NotNull
     private CarType type;
 
