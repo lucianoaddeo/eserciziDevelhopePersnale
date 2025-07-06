@@ -11,3 +11,14 @@ INSERT INTO cars (model_name, type, color, description) VALUES
 ('Chevrolet Silverado', 'PICKUP_TRUCK', 'Black', 'Powerful pickup for hauling'),
 ('Honda Civic', 'SEDAN', 'SILVER', 'Reliable sedan with great fuel efficiency'),
 ('Kia Sportage', 'CROSSOVER', 'ORANGE', 'Affordable crossover with modern features');
+
+INSERT INTO brands (name)  VALUES
+('Toyota'), ('Ford'), ('BMW'),
+('Mercedes-Benz'), ('Volkswagen'),
+('Audi'), ('Fiat'), ('Renault'),
+('Peugeot'), ('Hyundai'),
+('Kia'), ('Honda'),
+('Nissan'), ('Chevrolet'),
+('Jeep'), ('Tesla'),
+('Lamborghini'), ('Ferrari'),
+('Maserati'), ('Alfa Romeo');

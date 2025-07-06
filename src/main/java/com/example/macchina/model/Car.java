@@ -6,10 +6,16 @@ import com.example.macchina.enums.CarType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Set;
+
 
 @Entity
 @Table(name = "cars")
 public class Car {
+
+    public static Set<String> ORDER_FIELDS = Set.of("id", "modelName", "type",
+                                                    "color", "nation");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -33,6 +39,10 @@ public class Car {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)//caso particolare, nel data.sql non ho specificato il campo nation
     private CarNation nation;
+
+    @ManyToOne
+    //@Column(nullable = false)
+    private Brand brand;
 
     //constructors
 
